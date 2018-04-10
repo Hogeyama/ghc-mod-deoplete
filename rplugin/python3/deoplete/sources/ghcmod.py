@@ -13,7 +13,6 @@ def ghc_options():
 def to_candidates(words):
     return list(map(lambda x: { 'word': x }, words))
 
-# >>> re.search(r'^import\s+(qualified\s+)?[A-Z]\S*', 'import qualified Fuga')
 class Source(Base):
     def __init__(self, vim):
         super().__init__(vim)
@@ -23,6 +22,7 @@ class Source(Base):
         self.mark = "[ghc]"
         self.sorters = ["sorter_rank"]
         self.filetypes = ["haskell"]
+        self.min_pattern_length = 1000
         self.input_pattern += r'(^\s*{-#\s*(LANGUAGE|OPTIONS_GHC)\s+\S+|^import\s+(qualified\s+)?[A-Z]\S*)$'
         self.ghc_lang_exts = to_candidates(ghc_mod(["lang"]))
         self.ghc_flag_options = to_candidates(ghc_mod(["flag"]))
