@@ -23,7 +23,7 @@ class Source(Base):
         self.mark = "[ghc]"
         self.sorters = ["sorter_rank"]
         self.filetypes = ["haskell"]
-        self.input_pattern += r'(^\s*{-#\s*(LANGUAGE|OPTIONS_GHC)\s+\S+|^import\s+(qualified\s+)?[A-Z]\S*)'
+        self.input_pattern += r'(^\s*{-#\s*(LANGUAGE|OPTIONS_GHC)\s+\S+|^import\s+(qualified\s+)?[A-Z]\S*)$'
         self.ghc_lang_exts = to_candidates(ghc_mod(["lang"]))
         self.ghc_flag_options = to_candidates(ghc_mod(["flag"]))
         self.ghc_modules = to_candidates(ghc_mod(["modules"]))
