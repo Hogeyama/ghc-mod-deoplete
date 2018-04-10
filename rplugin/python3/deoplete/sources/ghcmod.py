@@ -10,8 +10,20 @@ def ghc_mod(args):
 def ghc_mod_symbols(module):
     return ghc_mod(["browse", module])
 
+def ghc_mod_symbols_detail(module):
+    return ghc_mod(["browse", "-d", "-p", module])
+
 def to_candidates(words):
     return list(map(lambda x: { 'word': x }, words))
+
+def to_candidates_detail(lines):
+    def item(line):
+        word, detail = re.search(r'(\S+)( :: (.*))?$', line).group(1,3)
+        if detail == None:
+            return { 'word': word }
+        else:
+            return { 'word': word, 'menu': detail }
+    return list(map(lambda x: item(x), lines))
 
 class Source(Base):
     def __init__(self, vim):
@@ -23,6 +35,7 @@ class Source(Base):
         self.sorters = ["sorter_rank"]
         self.filetypes = ["haskell"]
         self.min_pattern_length = 1000
+        self.max_menu_width = 80
         self.input_pattern += r'(^\s*{-#\s*(LANGUAGE|OPTIONS_GHC)\s+\S+'\
                             '|^import\s+(qualified\s+)?[A-Z]\S*'\
                             '|^import\s+(qualified\s+)?[A-Z]\S*\s*\(.*[a-zA-Z_]\S*)$'
@@ -46,7 +59,8 @@ class Source(Base):
             m = re.search(r'^import\s+(qualified\s+)?([A-Z]\S*)\s*\(.*[a-zA-Z_]\S*$', line)
             if m:
                 module = str(m.group(2))
-                return to_candidates(ghc_mod_symbols(module))
+                # return to_candidates(ghc_mod_symbols(module))
+                return to_candidates_detail(ghc_mod_symbols_detail(module))
             else:
                 return self.ghc_modules
         else:
